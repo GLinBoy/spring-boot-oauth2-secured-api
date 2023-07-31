@@ -29,7 +29,7 @@ class BookResource(val bookService: BookServiceApi) {
         ResponseEntity(bookService.saveBook(book), HttpStatus.CREATED)
 
     @DeleteMapping("{id}")
-    fun deleteBook(@PathVariable id: Long): ResponseEntity<Void> {
+    fun deleteBook(@PathVariable id: Long): ResponseEntity<Unit> {
         bookService.deleteBook(id)
         return ResponseEntity.noContent().build()
     }
