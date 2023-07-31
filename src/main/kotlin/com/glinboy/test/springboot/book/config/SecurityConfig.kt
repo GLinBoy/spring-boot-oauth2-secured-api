@@ -27,6 +27,7 @@ class SecurityConfig {
         return http
             .cors { it.disable() }
             .csrf { it.disable() }
+            .headers { it.frameOptions { it.disable() } }
             .authorizeHttpRequests {
                 it
                     .requestMatchers(
