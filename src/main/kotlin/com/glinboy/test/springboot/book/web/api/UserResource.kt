@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.server.ResponseStatusException
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -35,13 +34,6 @@ class UserResource(private val userService: UserServiceApi) {
     }
 
     @PutMapping
-    fun updateUser(@RequestBody user: User): ResponseEntity<User> {
-        if (user.email == null) {
-            throw ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "User should have email to update"
-            )
-        }
-        return ResponseEntity.ok(userService.saveUser(user))
-    }
+    fun updateUser(@RequestBody user: User): ResponseEntity<User> =
+        ResponseEntity.ok(userService.saveUser(user))
 }
