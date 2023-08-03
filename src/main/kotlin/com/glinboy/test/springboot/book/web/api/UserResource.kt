@@ -3,6 +3,7 @@ package com.glinboy.test.springboot.book.web.api
 import com.glinboy.test.springboot.book.entity.User
 import com.glinboy.test.springboot.book.service.UserServiceApi
 import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/v1/users")
+@SecurityRequirement(name = "Bearer Authentication")
 class UserResource(private val userService: UserServiceApi) {
 
     @GetMapping
