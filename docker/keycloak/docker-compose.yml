@@ -1,0 +1,21 @@
+# This configuration is intended for development purpose, it's **your** responsibility to harden it for production
+version: '3.8'
+name: keycloak-dev
+services:
+  keycloak:
+    container_name: keycloak-spring-dev
+    image: quay.io/keycloak/keycloak:22.0.1
+    command:
+      [
+        'start-dev --import-realm'
+      ]
+    volumes:
+      - ./realm-config:/opt/keycloak/data/import
+    environment:
+      - KC_DB=dev-file
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_FEATURES=scripts
+      - KC_HTTP_PORT=8080
+    ports:
+      - "8080:8080"
