@@ -1,10 +1,12 @@
 package com.glinboy.test.springboot.book.config
 
+import com.glinboy.test.springboot.book.security.KeycloackRoleConverter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
@@ -24,6 +26,8 @@ class SecurityConfig {
     @Bean
     @Throws(Exception::class)
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
+        val jwtAuthenticationConverter = JwtAuthenticationConverter()
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(KeycloackRoleConverter())
         return http
             .cors { it.disable() }
             .csrf { it.disable() }
@@ -33,9 +37,13 @@ class SecurityConfig {
                     .requestMatchers(
                         *AUTH_WHITELIST.map { AntPathRequestMatcher(it) }.toTypedArray()
                     ).permitAll()
+                    .requestMatchers(AntPathRequestMatcher("/api/v1/users")).hasAnyRole("ADMIN")
                     .anyRequest().authenticated()
             }
-            .oauth2ResourceServer { it.jwt(Customizer.withDefaults()) }
+            .oauth2ResourceServer {
+                it.jwt { it.jwtAuthenticationConverter(jwtAuthenticationConverter) }
+            }
+            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .build()
     }
 }
