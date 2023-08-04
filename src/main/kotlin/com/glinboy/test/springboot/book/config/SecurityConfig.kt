@@ -1,6 +1,6 @@
 package com.glinboy.test.springboot.book.config
 
-import com.glinboy.test.springboot.book.security.KeycloackRoleConverter
+import com.glinboy.test.springboot.book.security.KeycloakRoleConverter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -27,7 +27,7 @@ class SecurityConfig {
     @Throws(Exception::class)
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         val jwtAuthenticationConverter = JwtAuthenticationConverter()
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(KeycloackRoleConverter())
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(KeycloakRoleConverter())
         return http
             .cors { it.disable() }
             .csrf { it.disable() }
