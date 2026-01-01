@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
 @Configuration
 @EnableWebSecurity
@@ -31,19 +30,17 @@ class SecurityConfig {
         return http
             .cors { it.disable() }
             .csrf { it.disable() }
-            .headers { it.frameOptions { it.disable() } }
-            .authorizeHttpRequests {
-                it
-                    .requestMatchers(
-                        *AUTH_WHITELIST.map { AntPathRequestMatcher(it) }.toTypedArray()
-                    ).permitAll()
-                    .requestMatchers(AntPathRequestMatcher("/api/v1/users")).hasAnyRole("ADMIN")
+            .headers { it.frameOptions { frameOptions -> frameOptions.disable() } }
+            .authorizeHttpRequests { auth ->
+                auth
+                    .requestMatchers(*AUTH_WHITELIST).permitAll()
+                    .requestMatchers("/api/v1/users").hasAnyRole("ADMIN")
                     .anyRequest().authenticated()
             }
-            .oauth2ResourceServer {
-                it.jwt { it.jwtAuthenticationConverter(jwtAuthenticationConverter) }
+            .oauth2ResourceServer { oauth2 ->
+                oauth2.jwt { jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter) }
             }
-            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .build()
     }
 }
